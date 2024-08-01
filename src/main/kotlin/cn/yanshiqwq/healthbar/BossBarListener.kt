@@ -10,6 +10,7 @@ import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.scheduler.BukkitTask
@@ -23,7 +24,7 @@ import org.bukkit.scheduler.BukkitTask
  */
 
 class BossBarListener : Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerDamageEntity(event: EntityDamageByEntityEvent) {
         val damagerPlayer: Player = when (val damager = event.damager) {
             is Player -> damager
@@ -38,7 +39,7 @@ class BossBarListener : Listener {
         private val bars = mutableMapOf<Player, Pair<BossBar, BukkitTask>>()
         fun updateBossBar(player: Player, event: EntityDamageByEntityEvent) {
             val entity = event.entity
-            if (entity !is LivingEntity) return
+            if ((entity !is LivingEntity) || (entity == player)) return
 
             bars[player]?.second?.cancel()
 
